@@ -49,9 +49,13 @@ pipeline {
         stage('Login & Push to DockerHub') {
             steps {
                 echo 'Logging into DockerHub and pushing image'
-                withCredentials([usernamePassword(credentialsId: 'dockercreds', passwordVariable: 'dockerpwd', usernameVariable: 'dockerlogin')]) {
-                    sh 'echo "$dockerpwd" | docker login -u "$dockerlogin" --password-stdin'
-                    sh "sudo docker push chandrika5592/insureme:${TAG_NAME}"
+               withCredentials([usernamePassword(credentialsId: 'dockercreds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+    sh """
+        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+        docker push chandrika5592/insureme:3.0
+    """
+}
+
                 }
             }
         }
